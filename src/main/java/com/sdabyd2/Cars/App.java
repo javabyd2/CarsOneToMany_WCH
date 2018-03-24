@@ -10,6 +10,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.List;
+
 
 public class App {
 
@@ -105,6 +109,8 @@ public class App {
         vehicle11.setUserDetails(userDetails3);
         vehicle12.setUserDetails(userDetails5);
 
+
+
         Transaction transaction = null;
         Session session = getSession();
 
@@ -123,7 +129,23 @@ public class App {
         session.save(vehicle11);
         session.save(vehicle12);
 
+
+
         transaction.commit();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Vehicle> vehicleCriteriaQuery = builder.createQuery(Vehicle.class);
+        vehicleCriteriaQuery.from(Vehicle.class);
+
+        List<Vehicle> vehicleList = session.createQuery(vehicleCriteriaQuery).getResultList();
+
+        for (Vehicle v: vehicleList
+             ) {
+            System.out.println("Model: "+v.getVehicleName() + " \tUser: "+ v.getUserDetails().getUserName());
+        }
+
+        session.close();
+        session.getSessionFactory().close();
 
 
 
